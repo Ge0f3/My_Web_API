@@ -1,0 +1,3 @@
+pip install flask-restplus
+
+pip install flask_pymongo

@@ -1,0 +1,66 @@
+swagger: "2.0"
+info:
+  description: This is the swagger file that goes with our server code
+  version: "1.0.0"
+  title: Swagger Rest Article
+consumes:
+  - application/json
+produces:
+  - application/json
+
+basePath: /api
+
+# Paths supported by the server application
+paths:
+  /spam_detect:
+    get:
+      operationId: spam_detect.read_all
+      tags:
+        - spam_detect
+      summary: Read the entire list of people
+      description: Read the list of people
+      parameters:
+        - name: length
+          in: query
+          type: integer
+          description: Number of people to get from people
+          required: false
+        - name: offset
+          in: query
+          type: integer
+          description: Offset from beginning of list where to start gathering people
+          required: false
+      responses:
+        200:
+          description: Successfully read people list operation
+          schema:
+            type: array
+            items:
+              properties:
+                fname:
+                  type: string
+                lname:
+                  type: string
+                timestamp:
+                  type: string
+
+    post:
+      operationId: spam_detect.create
+      tags:
+        - spam_detect
+      summary: gets
+      description: Create a new person in the people list
+      parameters:
+        - name: person
+          in: body
+          description: Person to create
+          required: True
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                description: First name of person to create
+      responses:
+        201:
+          description: Successfully created person in list

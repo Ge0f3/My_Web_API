@@ -1,0 +1,49 @@
+{
+    "TableName": "audits",
+    "KeySchema": [
+        {
+            "AttributeName": "audit_id",
+            "KeyType": "HASH"
+        }
+    ],
+    "AttributeDefinitions": [
+        {
+            "AttributeName": "audit_id",
+            "AttributeType": "S"
+        },
+        {
+            "AttributeName": "year_month",
+            "AttributeType": "N"
+        },
+        {
+            "AttributeName": "created_date",
+            "AttributeType": "N"
+        }
+    ],
+    "GlobalSecondaryIndexes": [
+        {
+            "IndexName": "created-date",
+            "KeySchema": [
+                {
+                    "AttributeName": "year_month",
+                    "KeyType": "HASH"
+                },
+                {
+                    "AttributeName": "created_date",
+                    "KeyType": "RANGE"
+                }
+            ],
+            "Projection": {
+                "ProjectionType": "ALL"
+            },
+            "ProvisionedThroughput": {
+                "ReadCapacityUnits": 5,
+                "WriteCapacityUnits": 5
+            }
+        }
+    ],
+    "ProvisionedThroughput": {
+        "ReadCapacityUnits": 5,
+        "WriteCapacityUnits": 5
+    }
+}

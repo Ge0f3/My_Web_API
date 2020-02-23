@@ -1,0 +1,61 @@
+#Pipile to run tests, build and push docker image to ECR
+options:
+    docker: true
+
+pipelines:
+  branches:
+    '{dev,prod}':
+      - step:
+          name: Run Tests
+          image: python:3.6.8-slim
+          caches:
+             - pip
+          script:
+            - export PYTHONPATH=$PYTHONPATH:`pwd`
+            - pip install --upgrade pip
+            - pip install -r requirements.txt
+            - pip install coverage
+              #Run unit tests here, they need to be updated
+            - coverage run tests/test_audit.py #change to correct test file!
+            - coverage report
+            - coverage xml
+            #Saving the report to pass on to sonar-scanner
+          artifacts:
+            - coverage.xml
+      - step:
+          name: SonarQube
+          image: gcanal/sonar-scanner
+          script:
+            - apk add --update curl
+            - curl -v -X POST https://$SONAR_TOKEN@sonarcloud.io/api/projects/create -d "name=$BITBUCKET_REPO_SLUG&project=cocolevio_$BITBUCKET_REPO_SLUG&organization=cocolevio"
+            - sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN
+      - step:
+          name: Build & Push to ECR
+          deployment: staging
+          caches:
+            - docker
+          image: tstrohmeier/awscli:3.6.4
+          script:
+            # aws login
+            - eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+            # check if exists on first push.
+            - |
+              set +e 
+              aws ecr describe-repositories --repository-names $BITBUCKET_REPO_SLUG &>/dev/null
+              status=$?
+              set -e
+            - if [[ ! "${status}" -eq 0 ]]; then 
+            - aws ecr create-repository --repository-name $BITBUCKET_REPO_SLUG
+            - echo "{\"rules\":[{\"rulePriority\":1,\"description\":\"Expire images older than 2 days\",\"selection\":{\"tagStatus\":\"untagged\",\"countType\":\"sinceImagePushed\",\"countUnit\":\"days\",\"countNumber\":2},\"action\":{\"type\":\"expire\"}}]}" > policy.json
+            - aws ecr put-lifecycle-policy --repository-name "$BITBUCKET_REPO_SLUG" --lifecycle-policy-text "file://policy.json"
+            - fi
+            # docker
+            - export docker_image=${AWS_REGISTRY_URL}/$BITBUCKET_REPO_SLUG:$BITBUCKET_BRANCH
+            #need to add args..
+            - docker build -t $docker_image .
+            - docker push $docker_image
+      
+definitions:
+  services:
+    docker:
+      memory: 2048
