@@ -1,4 +1,0 @@
-11/29/2019 03:30:50 PM CST - services.common.v1.resources.machineLearning.prediction_routes - ERROR - 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
-11/29/2019 03:31:02 PM CST - services.common.v1.resources.machineLearning.prediction_routes - ERROR - name 'ham_spam_xcount' is not defined
-11/29/2019 03:31:44 PM CST - services.common.v1.resources.machineLearning.prediction_routes - ERROR - name 'ham_spam_xcount' is not defined
-11/29/2019 03:41:29 PM CST - services.common.v1.resources.machineLearning.prediction_routes - ERROR - Object of type ndarray is not JSON serializable

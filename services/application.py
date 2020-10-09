@@ -1,16 +1,18 @@
 from flask import Flask
 from importlib import import_module
-
-from services.config import RequiredConstants
-from services.blueprints import all_blueprints
 from flask_bcrypt import Bcrypt
+from werkzeug.contrib.fixers import ProxyFix
 import decimal
 import flask.json
 import datetime
 from bson.objectid import ObjectId
-import os, json, logging, logging.config
-from services.common.v1.resources.machineLearning.ServiceLayer import ServiceLayer as SL
-# [END imports]
+from services.blueprints import all_blueprints
+import os
+import json
+import logging
+import logging.config
+from werkzeug.utils import cached_property
+
 
 class MyJSONEncoder(flask.json.JSONEncoder):
 
@@ -24,9 +26,13 @@ class MyJSONEncoder(flask.json.JSONEncoder):
             return obj.isoformat()
         return super(MyJSONEncoder, self).default(obj)
 
-def setup_logging(default_path='logging_config.json', default_level=logging.INFO, env_key='LOG_CFG'):
+
+def setup_logging(
+        default_path='logging_config.json',
+        default_level=logging.INFO,
+        env_key='LOG_CFG'):
     """
-    Setup logging configuration
+    Set up logging configuration for interaction service
     """
 
     path = default_path
@@ -40,38 +46,27 @@ def setup_logging(default_path='logging_config.json', default_level=logging.INFO
         with open(path, 'rt') as f:
             config = json.load(f)
 
-        
         info_filename = config['handlers']['info_file_handler']['filename']
         error_filename = config['handlers']['error_file_handler']['filename']
 
         config['handlers']['info_file_handler']['filename'] = log_path + info_filename
-        config['handlers']['error_file_handler']['filename'] = log_path + error_filename
-        
+        config['handlers']['error_file_handler']['filename'] = log_path + \
+            error_filename
+
         logging.config.dictConfig(config)
     else:
         logging.basicConfig(level=default_level)
 
-app = Flask(__name__)
-bcrypt = Bcrypt(app)
 
-def load_models():
-    print("<------------------- loading ML models and starting Flask server ----------------->")
-    SL.load_auto_mpg()
-    SL.load_ham_spam()
-    print("<------------------- ML models loaded ----------------->")
-
-def create_app(config_obj=None, **kwargs):
+def create_app(config_obg=None, **kwargs):
+    app = Flask(__name__)
     setup_logging()
-    if config_obj:
-        app.config.from_object(config_obj)
-    else:
-        app.config.from_object(RequiredConstants)
+    print('Created app and set up logging!')
 
     register_blueprints(app)
-
-    #Loading Models before starting the app
-    load_models()
-    #custom json encoderd to deal with nonjson convertables
+    # https proxy
+    app.wsgi_app = ProxyFix(app.wsgi_app)
+    # custom json encoderd to deal with nonjson convertables
     app.json_encoder = MyJSONEncoder
     return app
 

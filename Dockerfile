@@ -1,25 +1,24 @@
 # Format: FROM    repository[:version]
-FROM ubuntu:17.04
+FROM python:3.7
 
-MAINTAINER cocolevio 'info@cocolevio.com'
-
-FROM python:3.6
+LABEL MAINTAINER Geoffrey 'geoffrey.geofe@gmail.com'
 
 RUN apt-get update -y && \
     apt-get install -y python-pip python-dev
 
-# We copy just the requirements.txt first to leverage Docker cache
+#copying just the requirements.txt first to leverage Docker cache
 COPY ./requirements.txt /app/requirements.txt
 
 WORKDIR /app
 
-RUN pip install --upgrade pip
 RUN pip3 install -r requirements.txt
-RUN pip3 install gunicorn
-RUN export DYLD_LIBRARY_PATH=/usr/local/mysql/lib
+RUN pip install gunicorn
 
 COPY . /app
 
-# Port to expose and command to start the server.
-EXPOSE 5411
-CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:5411", "manage:app"]
+RUN  mkdir /logs
+
+CMD ["gunicorn", "-w 1", "-b 0.0.0.0:5000", "manage:app"]
+
+EXPOSE 5000
+EXPOSE 80
