@@ -16,7 +16,7 @@ log = logging.getLogger(__name__)
 
 api = Api(common_blueprint_v1,
           version='1.0',
-          title='Involve AI APIs',
+          title='My Web APIs',
           description='Service that handles processing user input and sending back response')
 
 # prefixes
