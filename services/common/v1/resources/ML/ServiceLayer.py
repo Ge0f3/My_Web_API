@@ -5,6 +5,7 @@ from flask import request
 import pickle
 import os
 import numpy as np
+import pandas as pd
 
 parentDirectory = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
 
@@ -30,3 +31,18 @@ class ServiceLayer:
         return {
             prediction
         }
+
+    @staticmethod
+    def predict_spam_batch(form_data):
+        df = pd.read_csv(form_data)
+        df_tf = xcount.transform(df.text)
+        prediction = ham_spam.predict(df_tf)
+        df['Prediction'] = pd.Series(prediction).values
+        value_counts = df['Prediction'].value_counts().to_dict()
+        df = df.to_json(orient='records')
+        df = json.loads(df)
+        response = {
+            'value_counts': value_counts,
+            'result': df
+        }
+        return response

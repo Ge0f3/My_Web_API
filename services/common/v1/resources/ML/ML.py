@@ -36,9 +36,26 @@ class Spam(Resource):
                     'Access-Control-Allow-Origin': '*'},
                 'body': prediction[0]}
         except Exception as E:
-            print(E)
             log.error(E)
-            return jsonify({'Error':"The error is {}".format(E)})
+            return jsonify({'Error': "The error is {}".format(E)})
+
+@ns.route('/spam_batch')
+class SpamBatch(Resource):
+    def post(self):
+        form_data = request.files['file']
+        log.info("File recieved")
+        try:
+            response = ServiceLayer.predict_spam_batch(form_data)
+
+            return {
+                'statusCode': 200,
+                'headers': {
+                    'Content-Type': 'text/plain',
+                    'Access-Control-Allow-Origin': '*'},
+                'body': response}
+        except Exception as E:
+            log.error(E)
+            return jsonify({'Error': "The error is {}".format(E)})
 
 
 @ns.route('/mpg')
@@ -66,7 +83,6 @@ class MPG(Resource):
                     'Access-Control-Allow-Origin': '*'},
                 'body': prediction}
         except Exception as E:
-            print(E)
             log.error(E)
             return jsonify({'Error': "The error is {}".format(E)})
 

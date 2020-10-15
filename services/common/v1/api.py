@@ -22,12 +22,10 @@ api = Api(common_blueprint_v1,
 # prefixes
 MachineLearning = '/ml'
 
-DeepLearning=''
+DeepLearning = ''
 
 health = '/health'
 
 api.add_namespace(ML, path=MachineLearning)
-api.add_namespace(DL,path=DeepLearning)
+api.add_namespace(DL, path=DeepLearning)
 api.add_namespace(health_routes, path=health)
-
-
