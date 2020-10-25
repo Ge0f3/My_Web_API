@@ -15,3 +15,10 @@ mpg = Model('AutoMPG Schema', {
     'Origin': fields.String
 
 })
+
+iris = Model('Iris Schema', {
+    'sepal_length': fields.Float,
+    'sepal_width': fields.Float,
+    'petal_length': fields.Float,
+    'petal_width': fields.Float
+})

@@ -13,6 +13,7 @@ ham_spam = pickle.load(open('./Models/model_file', 'rb'))
 xcount = pickle.load(open('./Models/countvect', 'rb'))
 
 auto_mpg = pickle.load(open('./Models/auto_mpg', 'rb'))
+iris = pickle.load(open('./Models/iris','rb'))
 
 
 class ServiceLayer:
@@ -26,11 +27,15 @@ class ServiceLayer:
 
     @staticmethod
     def predict_mpg(data):
-        data = list(data)
         prediction = auto_mpg.predict([data])
-        return {
-            prediction
-        }
+        print(prediction)
+        return prediction[0]
+    
+    @staticmethod
+    def predict_iris(data):
+        prediction = iris.predict([data])
+        print(prediction[0])
+        return prediction[0]
 
     @staticmethod
     def predict_spam_batch(form_data):

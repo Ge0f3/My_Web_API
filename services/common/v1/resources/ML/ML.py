@@ -5,7 +5,7 @@ import json
 import os
 from services.config import RequiredConstants as RC
 from flask_restplus import Resource, Namespace, reqparse
-from services.common.v1.schemas.ML_schemas import spam, mpg
+from services.common.v1.schemas.ML_schemas import spam, mpg ,iris
 from services.common.v1.resources.ML.ServiceLayer import ServiceLayer
 
 
@@ -16,6 +16,7 @@ ns = Namespace(
     description='Operation Realted to Machine learning Model API')
 ns.models[spam.name] = spam
 ns.models[mpg.name] = mpg
+ns.models[iris.name] = iris
 
 
 @ns.route('/spam')
@@ -99,3 +100,25 @@ class HousePrice(Resource):
                 'Content-Type': 'text/plain',
                 'Access-Control-Allow-Origin': '*'},
             'body': result}
+
+
+@ns.route('/iris')
+class iris(Resource):
+    @ns.expect(iris)
+    def post(self):
+        form_data = request.json
+
+        data = [float(form_data['sepal_length']), float(form_data['petal_length']),  float(form_data['petal_width'])]
+        print(data)
+        try:
+            prediction = ServiceLayer.predict_iris(data)
+            print(prediction)
+            return {
+                'statusCode': 200,
+                'headers': {
+                    'Content-Type': 'text/plain',
+                    'Access-Control-Allow-Origin': '*'},
+                'body': prediction}
+        except Exception as E:
+            log.error(E)
+            return jsonify({'Error': "The error is {}".format(E)})
