@@ -26,3 +26,6 @@ htmlcov/
 .coverage
 .coverage.*
 *,cover
+
+#Config files 
+services/config.py 
