@@ -22,3 +22,10 @@ iris = Model('Iris Schema', {
     'petal_length': fields.Float,
     'petal_width': fields.Float
 })
+
+send_email = Model('Send Email', {
+    'name': fields.String,
+    'email': fields.String,
+    'msg': fields.String
+
+})

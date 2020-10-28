@@ -64,7 +64,7 @@ class MPG(Resource):
     @ns.expect(mpg)
     def post(self):
         form_data = request.json
-
+        print(form_data)
         data = [int(form_data['cylinders']), int(form_data['displacement']), int(form_data['horepower']), int(form_data['weight']), int(form_data['acceleration']), int(form_data['model_year'])]
         if(form_data['Origin'] == 'USA'):
             data.extend([int(0), int(0), int(1)])
