@@ -25,8 +25,12 @@ jobs:
         version: '290.0.1'
         service_account_key: ${{ secrets.RUN_SA_KEY }}
         project_id: ${{ secrets.RUN_PROJECT }}
-    -name: config Files
-      run : gsutil cp gs://personal_bucket_geo/config.py services/config.py
+    
+    # Build and push image to Google Container Registry
+    - name: config Files
+      
+      run: |-
+        gsutil cp gs://personal_bucket_geo/config.py services/config.py
 
     # Build and push image to Google Container Registry
     - name: Build
