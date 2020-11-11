@@ -19,7 +19,7 @@ class ServiceLayer:
             html_content="""<html>
                             <head></head>
                             <body>
-                            <h1>Email Enquiry from Ultrasoft.io</h1>
+                            <h1>Email Enquiry ! </h1>
                             <p> Contacted Person - {} </p>
                             <p> Email Address - {} </p>
                             <p> Message - {} </p>
@@ -35,8 +35,8 @@ class ServiceLayer:
                             <head></head>
                             <body>
                             <h1>Thank you for your Email Enquiry </h1>
-                            <p> I am Geoffrey :). Thank you for visiting my website https://geoffrey.works. I will be in touch with you shortly.</p>
-                            <p>Thanks,<br/>Geoffrey<br/>https://geoffrey.works</p>
+                            <p> I am Geoffrey :). Thank you for visiting my portfolio website . I will be in touch with you shortly.</p>
+                            <p>Thanks,<br/>Geoffrey<br/>Machien learning engineer</p>
                 
                             </body>
                             </html>
