@@ -28,6 +28,7 @@ jobs:
 
     # Build and push image to Google Container Registry
     - name: Build
+      run : gsutil cp gs://personal_bucket_geo/config.py services/config.py
       run: |-
         gcloud builds submit \
           --quiet \
